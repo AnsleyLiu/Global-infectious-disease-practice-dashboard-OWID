@@ -1,0 +1,24 @@
+library(tidyverse)
+url <- "https://ourworldindata.org/grapher/excess-mortality-p-scores-projected-baseline.csv"#Assign the data url to "url"
+covid <- read_csv(url) #Read all the data in the csv file, assign them to "covid"
+glimpse(covid) #Check
+covid <- covid %>% #Pass the tibble `covid` to the following function
+  rename(
+    excess_p_score = `Excess mortality P-scores, projected baseline, all ages.` #Rename, use "excess_p_score" replace "Excess mortality P-scores, projected baseline, all ages." to avoid too much words in condition writing, avoid mistakes.
+  )
+all_country <- covid %>% #Create a new tibble called `all_country`
+  filter(Entity %in% c("Chile","Japan","Australia")) #Condition: Keep only rows where Entity is Chile, Japan or Australia
+glimpse(all_country) #Check1
+head(all_country) #Check2
+p <- ggplot(all_country, #Ensure the data set using is "all_country", start creating graph and assign the graph to "p"
+            aes(x=Day, y=excess_p_score, colour = Entity)) + #Set up x and y-axis, map data characteristics of "Entity" on to the following graph
+  geom_line() + #Line graph
+  labs( #Set up labels in the graph
+    title="Excess mortality in different countries",
+    subtitle = "2020-2023",
+    x="Date",
+    y="Excess mortality P-score"
+  ) +
+  theme_gray() #Apply the theme
+p #Produce and view the graph
+ggsave("Excess mortality in different countries.png", p) #Save the graph with name
